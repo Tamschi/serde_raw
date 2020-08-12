@@ -1,0 +1,12 @@
+[package]
+name = "serde_raw"
+version = "0.0.0-dev"
+authors = ["Tamme Schichler <tamme@schichler.dev>"]
+edition = "2018"
+description = "Serde data to/from Write/Read with high control over the layout"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = "1.0.115"
