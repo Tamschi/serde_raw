@@ -199,7 +199,7 @@ impl<'a, 'de, Source: Read> de::Deserializer<'de> for Deserializer<'a, Source> {
 	where
 		V: de::Visitor<'de>,
 	{
-		needs_clarification(&visitor)
+		visitor.visit_seq(SeqAccess(self.0))
 	}
 	fn deserialize_tuple<V>(self, len: usize, visitor: V) -> Result<V::Value, Self::Error>
 	where
@@ -278,5 +278,16 @@ impl<'a, 'de, Source: Read> de::SeqAccess<'de> for TupleAccess<'a, Source> {
 	}
 	fn size_hint(&self) -> Option<usize> {
 		Some(self.0)
+	}
+}
+
+struct SeqAccess<'a, Source: Read>(&'a mut Source);
+impl<'a, 'de, Source: Read> de::SeqAccess<'de> for SeqAccess<'a, Source> {
+	type Error = de::value::Error;
+	fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>
+	where
+		T: de::DeserializeSeed<'de>,
+	{
+		Some(seed.deserialize(Deserializer(self.0))).transpose()
 	}
 }
